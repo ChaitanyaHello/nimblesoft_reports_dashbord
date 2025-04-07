@@ -17,6 +17,7 @@ import { animalTrustPdf } from '../../../services/pdf_generator/animal_trust_ins
 export interface DocumentPrepareFor {
   beneficiary: Beneficiary;
   Successor: Beneficiary[];
+  spouse_name?:string,
   pets: any[];
   caregiver: Beneficiary[];
   monitoring: { trusteeVisitsRequired: '', visitFrequency: '' }
@@ -108,6 +109,7 @@ export class AnimalCareComponent implements OnInit {
         if (this.Prepare_for_client.length > 0) {
           this.DocumentPrepareFor = {
             beneficiary: this.Prepare_for_client[0],
+            spouse_name:this.Prepare_for_client[1]?.firstName + this.Prepare_for_client[1]?.lastName,
             Successor: [],
             pets: [],
             caregiver: [],

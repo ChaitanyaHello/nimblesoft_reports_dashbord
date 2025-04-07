@@ -151,7 +151,6 @@ export async function generateCertificateOfTrustPDF(clientData: any) {
         y -= spacing;
     }
 
-
     // Function to calculate the X position based on alignment
     function getXAlignment(line: { text: string; isDynamic: boolean }[], fontSize: number, alignment: Alignment): number {
         const textWidth = getLineWidth(line, fontSize);
@@ -193,9 +192,7 @@ export async function generateCertificateOfTrustPDF(clientData: any) {
         const x = 50; // Left alignment
 
         // State Section
-        page.drawText(`STATE OF ${addressTrustee1} `, { x, y, size: 12, font: boldFont });
-        page.drawText("                  )", { x: x + 150, y, size: 12, font: boldFont });
-
+        page.drawText(`STATE OF ${addressTrustee1} )`, { x, y, size: 12, font: boldFont });
         y -= 20;
         //for empty space
         page.drawText("", { x, y, size: 12, font: boldFont });
@@ -231,9 +228,6 @@ export async function generateCertificateOfTrustPDF(clientData: any) {
     function addNewPage(pdfDoc: PDFDocument): PDFPage {
         return pdfDoc.addPage([595.28, 841.89]);
     }
-
-
-
     function addContent(page: PDFPage, text: string, width: number, startY: number, font: PDFFont): number {
         let y = startY;
         const margin = 50;
@@ -241,7 +235,8 @@ export async function generateCertificateOfTrustPDF(clientData: any) {
         const fontSize = 12;
         const lines = text.split("\n");
     
-      
+        // Example dynamic values
+       
     
         lines.forEach(line => {
           // Split into tokens, preserving dynamic tokens intact
@@ -306,6 +301,8 @@ export async function generateCertificateOfTrustPDF(clientData: any) {
     
         return y;
       }
+
+
 
 
 
@@ -444,12 +441,9 @@ export async function generateCertificateOfTrustPDF(clientData: any) {
 
     y8 = addStateCountySection(page, y8);
 
-    const contentpage8: string = 'Acknowledged before me by ${currentTrustees} in their capacity as Trustees this the ___ day of _____________________, 2025.';
-    y8 = addContent(page, contentpage8, width8 + 10, y8 - 20, boldFont)
+    y8= addContent(page,"Acknowledged before me by ${currentTrustees} in their capacity as Trustees this the ___ day of _____________________, 2025.", width8 + 10, y8 - 20, timesNewRomanFont);
 
     y8 = addNotarySection(page, y8 - 10);
-
-
 
 
     // Generate and download the PDF
