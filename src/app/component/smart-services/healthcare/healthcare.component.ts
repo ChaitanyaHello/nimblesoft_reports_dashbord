@@ -12,8 +12,8 @@ import { HealthcareHipaaAuthorizationSuccessorPsychotherapyNotesComponent } from
 import { Router } from '@angular/router';
 import { HealthcarePdfFilesGenerationService } from '../../../services/healthcare/healthcare-pdf-files-generation.service';
 import { generateMedicalPowerOfAttorneyPDF } from '../../../services/pdf_generator/Medical_power_of_attorney';
-
-
+import { Healthcare_hipaa_pdf } from '../../../services/pdf_generator/Healthcare - HIPAA';
+import { PowerOfAttorneyPdf } from '../../../services/pdf_generator/Healthcare- SDPOA';
 export interface DocumentPrepareFor {
   beneficiary: Beneficiary;
   HealthcareSurrogateSelector: Beneficiary[];
@@ -57,7 +57,9 @@ export class HealthcareComponent implements OnInit {
     private legalDocumentsService: LegalDocumentsService,
     private profileService: myProfileService,
     private router: Router, 
-    private pdfgeneration: HealthcarePdfFilesGenerationService
+    private pdfgeneration: HealthcarePdfFilesGenerationService,
+    private healtCareHippa: Healthcare_hipaa_pdf,
+    private powerOfAttorneyPdf: PowerOfAttorneyPdf
   ) {}
 
   ngOnInit(): void {
@@ -204,6 +206,8 @@ export class HealthcareComponent implements OnInit {
   }
 
   async Assemble(): Promise<void> {
+    this.healtCareHippa.generatePdf(this.DocumentPrepareFor);
+    this.powerOfAttorneyPdf.generatePdf(this.DocumentPrepareFor);
     this.pdfgeneration.loadPdfs(this.DocumentPrepareFor);
     await generateMedicalPowerOfAttorneyPDF(this.DocumentPrepareFor)
     console.log("Download PDF for:", this.DocumentPrepareFor);

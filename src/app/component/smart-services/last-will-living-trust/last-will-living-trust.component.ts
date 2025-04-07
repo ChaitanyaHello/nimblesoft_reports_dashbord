@@ -29,8 +29,9 @@ import { LastWillLivingTrustService } from '../../../services/last_will_living_t
 import { generateLivingTrustPDF } from '../../../services/pdf_generator/Living_Trust_Funding_Instructions';
 import { generateCertificateOfTrustPDF } from '../../../services/pdf_generator/Certificate_of_trust';
 import { generateLastWillAndTestament } from '../../../services/pdf_generator/Last_will_testament';
-
-
+import { Revocable_living_trust_execution_instructions } from '../../../services/pdf_generator/Revocable_living_trust_execution_instructions';
+import { last_Will_Testament_Execution_Instructions } from '../../../services/pdf_generator/Last-Will-Testament -Execution-Instructions';
+import { Revocable_living_TrustAgreementPDF } from '../../../services/pdf_generator/last_Will_living_revocable_Trust';
 
 export interface DocumentPrepareFor {
   beneficiary: Beneficiary;
@@ -125,7 +126,7 @@ export class LastWillLivingTrustComponent implements OnInit {
   property!: IProperty;
   ClientData!: ClientData;
   loading: boolean = false;
-  constructor(private profileService: myProfileService, private router: Router, private lastwill_generate: LastWillLivingTrustService) {}
+  constructor(private profileService: myProfileService, private router: Router, private lastwill_generate: LastWillLivingTrustService, private revocable_living_trust_execution_instructions: Revocable_living_trust_execution_instructions, private last_Will_Testament_Execution_Instructions: last_Will_Testament_Execution_Instructions, private revocable_living_TrustAgreementPDF: Revocable_living_TrustAgreementPDF) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -703,12 +704,12 @@ If you choose to create a joint Revocable Trust, you will be able to create two 
  async generateDocuments(){
     this.loading = true; 
     await this.clientDataUpdate();
-    console.log('Hello',this.ClientData.revocable_living_trust_funding_instructions);
-   await generateLivingTrustPDF(this.ClientData.revocable_living_trust_funding_instructions);
+    await generateLivingTrustPDF(this.ClientData.revocable_living_trust_funding_instructions);
    await generateCertificateOfTrustPDF(this.ClientData.trust);
    await generateLastWillAndTestament(this.ClientData.last_will);
- 
-  
+   this.revocable_living_trust_execution_instructions.generateWillPDF(this.ClientData.revocable_living_trust_execution_instructions);
+   this.last_Will_Testament_Execution_Instructions.generatePDF();
+   this.revocable_living_TrustAgreementPDF.livingtrustrevocablegeneratePDF(this.ClientData.revocable_living_trust);
     if(this.ClientData!= null){
       await this.lastwill_generate.load_PDFs(this.ClientData);
      
