@@ -11,9 +11,9 @@ import { HealthcareHipaaAuthorizationSuccessorRepresentativesComponent } from '.
 import { HealthcareHipaaAuthorizationSuccessorPsychotherapyNotesComponent } from './healthcare-hipaa-authorization-successor-psychotherapy-notes/healthcare-hipaa-authorization-successor-psychotherapy-notes.component';
 import { Router } from '@angular/router';
 import { HealthcarePdfFilesGenerationService } from '../../../services/healthcare/healthcare-pdf-files-generation.service';
+import { generateMedicalPowerOfAttorneyPDF } from '../../../services/pdf_generator/Medical_power_of_attorney';
 import { Healthcare_hipaa_pdf } from '../../../services/pdf_generator/Healthcare - HIPAA';
 import { PowerOfAttorneyPdf } from '../../../services/pdf_generator/Healthcare- SDPOA';
-
 export interface DocumentPrepareFor {
   beneficiary: Beneficiary;
   HealthcareSurrogateSelector: Beneficiary[];
@@ -205,10 +205,11 @@ export class HealthcareComponent implements OnInit {
     this.currentStep = 'successor';
   }
 
-  Assemble(): void {
+  async Assemble(): Promise<void> {
     this.healtCareHippa.generatePdf(this.DocumentPrepareFor);
     this.powerOfAttorneyPdf.generatePdf(this.DocumentPrepareFor);
     this.pdfgeneration.loadPdfs(this.DocumentPrepareFor);
+    await generateMedicalPowerOfAttorneyPDF(this.DocumentPrepareFor)
     console.log("Download PDF for:", this.DocumentPrepareFor);
     // Trigger your PDF generation logic here.
   }
@@ -228,14 +229,16 @@ export class HealthcareComponent implements OnInit {
     this.currentStep = 'hipaa_authorization';
   }
 
-  handleHipaaPsychotherapyFinish(choice: 'include' | 'exclude'): void {
+  async handleHipaaPsychotherapyFinish(choice: 'include' | 'exclude'): Promise<void> {
     console.log("User selected psychotherapy notes inclusion:", choice);
     // The child already updated DocumentPrepareFor, so we can proceed to next step or finalize
+    await generateMedicalPowerOfAttorneyPDF(this.DocumentPrepareFor)
     this.pdfgeneration.loadPdfs(this.DocumentPrepareFor);
     this.currentStep = 'finish'; // or whatever step you want
   }
   
-  goToMyFiles(): void {
+  async goToMyFiles(): Promise<void> {
+
     this.router.navigate(['/my-files']);
   }  
   
