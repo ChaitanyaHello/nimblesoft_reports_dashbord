@@ -15,6 +15,23 @@ import { IRequests } from '../../../../models/interfaces/utilities/IRequests';
 export class TrustMonitoringComponent {
   onBeneficiariesChange(data: IRequests[]) {
     console.log("My Real estate beneficiaries",data);
+
+    if (this.DocumentPrepareFor) {
+      this.DocumentPrepareFor.dispositionFund = (data as any[]).map(d => {
+        const isCharity = !!d.charityName;
+        return {
+          type: isCharity ? 'charity' : 'individual',
+          name: isCharity ? d.charityName ?? '' : d.individualName ?? '',
+          percentage: d.percentage ?? null,
+          charityDetails: {
+            name: d.charityName ?? '',
+            city: d.charityCity ?? '',
+            state: d.charityState ?? ''
+          }
+        };
+      });
+    }
+    //sessionStorage.setItem('animalCareData', JSON.stringify(this.DocumentPrepareFor));
   }
 
   @Input() DispositionAgent: Beneficiary[] = [];
@@ -25,10 +42,37 @@ export class TrustMonitoringComponent {
   // Emit an event when Back is clicked.
   @Output() selectionCanceled = new EventEmitter<void>();
 
+  //@Input() parentKey: string = '';
 
   beneficiaries = [
     { type: 'individual', name: '', percentage: null, charityDetails: { name: '', city: '', state: '' } }
   ];
+
+  ngOnInit(): void {
+      // Get previously selected successorType if present
+      if (this.DocumentPrepareFor && (this.DocumentPrepareFor as any).successorType) {
+        this.successorType = (this.DocumentPrepareFor as any).successorType;
+      }else {
+        this.successorType = 'equal';
+      }
+
+      this.successorType = (this.DocumentPrepareFor as any).successorType || 'equal';
+      
+      console.log("data:",this.DocumentPrepareFor?.dispositionFund)
+      
+      // Restore beneficiaries from dispositionFund
+      if (this.DocumentPrepareFor?.dispositionFund?.length) {
+        this.beneficiaries = [...this.DocumentPrepareFor.dispositionFund];
+        console.log("restoreddata:", this.beneficiaries);
+      } else {
+        this.beneficiaries = [{
+        type: 'individual',
+        name: '',
+        percentage: null,
+        charityDetails: { name: '', city: '', state: '' }
+      }];
+    }
+  }
 
 
   addBeneficiary() {
@@ -52,27 +96,53 @@ export class TrustMonitoringComponent {
   successorType: string = 'equal';
 
   onSuccessorTypeChange(newVal: string): void {
-    this.successorType = newVal;
+    //this.successorType = newVal;
     if (!this.DocumentPrepareFor) return;
-    this.DocumentPrepareFor.dispositionFund = [];
+
+     this.successorType = newVal;
+     // Save Selected successor type temporarily
+     (this.DocumentPrepareFor as any).successorType = newVal;
+
+    console.log("seccessor Type:" ,(this.DocumentPrepareFor as any).successorType = newVal);
+
+
+   // Update dispositionFund to reflect the newly switched list
+   this.DocumentPrepareFor.dispositionFund = [...this.beneficiaries];
+    
+    if(newVal !== 'charities') {
+      this.beneficiaries = [];
+      this.DocumentPrepareFor.dispositionFund = [];
+    }
 
   }
 
 
-
   // When Back is clicked.
   cancelSelection(): void {
+
+    if (this.DocumentPrepareFor) {
+      this.DocumentPrepareFor.dispositionFund = [...this.beneficiaries];
+    }
+
+    console.log("call back:",this.DocumentPrepareFor?.dispositionFund)
+
     this.selectionCanceled.emit();
   }
 
 
 
   // When Next is clicked, emit the selected surrogates.
-  confirmToNext(): void {
+  confirmToNext(): void { 
     if (!this.DocumentPrepareFor) return;
-    this.DocumentPrepareFor.dispositionFund = this.beneficiaries;
-    this.selectionConfirmed.emit();
 
+
+      (this.DocumentPrepareFor as any).successorType = this.successorType;
+
+      console.log("SAVING to session:", JSON.stringify(this.DocumentPrepareFor))
+
+      //sessionStorage.setItem('animalCareData', JSON.stringify(this.DocumentPrepareFor)); 
+
+    this.selectionConfirmed.emit();
   }
 
 }
