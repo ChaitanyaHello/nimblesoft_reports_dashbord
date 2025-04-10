@@ -34,6 +34,8 @@ export class FinancesRepresentativeAgentComponent  implements OnInit{
     console.log("Representatives Selector – Loaded Members:", this.actual_data_members);
     console.log("Representatives Selector – DocumentPrepareFor:", this.DocumentPrepareFor);
     // Initially assign the full list.
+
+    this.selectedRepresentatives=this.DocumentPrepareFor?.RepresentativesAgent||[]
    
   }
 

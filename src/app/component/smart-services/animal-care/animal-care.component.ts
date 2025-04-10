@@ -22,6 +22,7 @@ export interface DocumentPrepareFor {
   caregiver: Beneficiary[];
   monitoring: { trusteeVisitsRequired: '', visitFrequency: '' }
   dispositionFund: DispositionFund[];
+  ultimateDispositionFund: UltimateDispositionFund[];
 }
 
 export interface DispositionFund { 
@@ -29,6 +30,13 @@ export interface DispositionFund {
   name: string; 
   percentage: null; 
   charityDetails: { name: string; city: string; state: string }  
+}
+
+export interface UltimateDispositionFund{
+  type: string;
+  name: string;
+  percentage: null;
+  charityDetails: { name: string; city: string; state: string}
 }
 
 export interface Monitoring {
@@ -62,6 +70,11 @@ export class AnimalCareComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const storedData = sessionStorage.getItem('animalCareData');
+    if (storedData) {
+      this.DocumentPrepareFor = JSON.parse(storedData);
+    }
+
     this.loadUsers();
   }
 
@@ -114,7 +127,8 @@ export class AnimalCareComponent implements OnInit {
             pets: [],
             caregiver: [],
             monitoring: { trusteeVisitsRequired: '', visitFrequency: '' },
-            dispositionFund: []
+           dispositionFund: [],
+            ultimateDispositionFund: []
           };
         }
 
@@ -183,6 +197,11 @@ export class AnimalCareComponent implements OnInit {
     this.DispositionAgent = this.actual_data_members.filter(member =>
       !this.DocumentPrepareFor || member.index !== this.DocumentPrepareFor.beneficiary.index
     );
+    if (this.DocumentPrepareFor) {
+      this.DocumentPrepareFor.caregiver = selectedSuccessors;
+      sessionStorage.setItem('animalCareData', JSON.stringify(this.DocumentPrepareFor));
+    }
+    
     // Move on to HIPAA Authorization step.
     this.currentStep = 'Monitoring';
     console.log("Monitoring selection confirmed:", selectedSuccessors);

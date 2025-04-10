@@ -33,6 +33,10 @@ export class CaregiverComponent {
     this.DocumentPrepareFor ? this.DocumentPrepareFor.caregiver=updatedReps : [];
     this.selectedRepresentatives = updatedReps;
   }
+
+  ngOnInit(): void {
+    this.selectedRepresentatives=this.DocumentPrepareFor?.caregiver||[]
+  }
   
     toggleSelection(user: Beneficiary): void {
       if (!this.DocumentPrepareFor) return;
