@@ -142,7 +142,7 @@ export class PowerOfAttorneyPdf {
 
 
     page.drawText('Special instructions applicable to co-agents (if you have appointed co-agents to act, initial in ', { x: 60, y: height - 360, size: fontSize, font });
-    page.drawText('front of one of the following sentences to have it apply; if no selection is made, each agent will be entitled to act independently): ', { x: 50, y: height - 373, size: fontSize, font });
+    page.drawText('front of one of the following sentences to have it apply; if no selection is made, each agent will be', { x: 50, y: height - 373, size: fontSize, font });
     page.drawText('entitled to act independently): ', { x: 50, y: height - 383, size: fontSize, font });
 
     this.drawCheckbox(page, 50, height- 410, 'Each of my co-agents may act independently for me', false);
@@ -185,7 +185,7 @@ export class PowerOfAttorneyPdf {
      page.drawText('UNLESS YOU DIRECT OTHERWISE BELOW, THIS POWER OF ATTORNEY IS ',{x: 50, y: height -130, size: fontSize ,font});
      page.drawText('EFFECTIVE IMMEDIATELY AND WILL CONTINUE UNTIL IT TERMINATES',{x: 50, y: height -140, size: fontSize ,font});
 
-     page.drawText('CHOOSE ONE OF THE FOLLOWING ALTERNATIVES BY CROSSING OUT THE ALTERNATIVE NOT CHOSEN:',{x: 50, y: height -170, size: fontSize ,font});
+     page.drawText('CHOOSE ONE OF THE FOLLOWING ALTERNATIVES BY CROSSING OUT THE',{x: 50, y: height -170, size: fontSize ,font});
      page.drawText('ALTERNATIVE NOT CHOSEN:',{x: 50, y: height -185, size: fontSize ,font});
 
 
@@ -196,7 +196,7 @@ export class PowerOfAttorneyPdf {
      page.drawText('BECOME EFFECTIVE ON THE DATE IT IS EXECUTED.',{x: 50, y: height -265, size: fontSize ,font});
 
 
-     page.drawText('IF NEITHER (A) NOR (B) IS CROSSED OUT, IT WILL BE ASSUMED THAT YOU CHOSE ALTERNATIVE (A).',{x: 50, y: height -290, size: fontSize ,font});
+     page.drawText('IF NEITHER (A) NOR (B) IS CROSSED OUT, IT WILL BE ASSUMED THAT YOU.',{x: 50, y: height -290, size: fontSize ,font});
      page.drawText('CHOSE ALTERNATIVE (A).',{x: 50, y: height -305, size: fontSize ,font});
 
      page.drawText('If Alternative (B) is chosen and a definition of my disability or incapacity is not contained ',{x: 50, y: height - 340, size: fontSize ,font});

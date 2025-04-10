@@ -35,6 +35,13 @@ export class SuccessorComponent implements OnInit {
 
   ngOnInit(): void {
   console.log('SuccessorAgent -' ,this.SuccessorAgent);
+  this.selectedRepresentatives = this.DocumentPrepareFor?.Successor || [];
+
+   // To Prevent the undfined array issues
+   if (this.DocumentPrepareFor && !this.DocumentPrepareFor.Successor) 
+    {
+      this.DocumentPrepareFor.Successor = []; 
+    }
   }
 
 

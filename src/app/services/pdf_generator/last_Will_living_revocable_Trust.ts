@@ -17,23 +17,46 @@ export class Revocable_living_TrustAgreementPDF {
         const titleFontSize = 15;
         const textFontSize = 11;
 
-        const Tittle = clientData?.Trust_Title || "____________________________________________"
-        const name = clientData?.firstName +' '+ clientData?.lastName || "_________________________";
-        const Trustee_1 = clientData?.Trustee_1 || "_________________________";
-        const Trustee_2 = clientData?.Trustee_2 || "_________________________";
+        const Tittle = clientData?.Trust_Title?.trim() 
+        ? { text: clientData.Trust_Title, font: boldFont }
+        : { text: "____________________________________________", font: font };
+      
+      const name = clientData?.firstName?.trim() && clientData?.lastName?.trim()
+        ? { text: `${clientData.firstName} ${clientData.lastName}`, font: boldFont }
+        : { text: "_________________________", font: font};
+      
+      const Trustee_1 = clientData?.Trustee_1?.trim()
+        ? { text: clientData.Trustee_1, font: boldFont }
+        : { text: "_________________________", font: font };
+      
+      const Trustee_2 = clientData?.Trustee_2?.trim()
+        ? { text: clientData.Trustee_2, font: boldFont }
+        : { text: "_________________________", font: font};
+
+
+        this.replacedValues = [
+            name.text,
+            Trustee_1.text,
+            Trustee_2.text,
+            Tittle.text
+        ].filter(value =>
+            value && value.trim() !== '' && value !== '_________________________' && value !== '____________________________________________'
+        );
+
+      const textsigm = { text: Tittle.text, font: Tittle.font };
         
         // Sections split across pages
         const pagesContent = [
             [
-                `${Tittle}`,
-                `${name} and ${name}, both of Frisco, Denton County, Texas, as Settlors, hereby enter into this TRUST AGREEMENT with ${name} and ${name}, as Co-Trustees (collectively referred to herein as “Trustee”), on this the ___________ day of ___________________, 2025. `,
+                `${Tittle.text}`,
+                `${name.text} and ${name.text}, both of Frisco, Denton County, Texas, as Settlors, hereby enter into this TRUST AGREEMENT with ${name.text} and ${name.text}, as Co-Trustees (collectively referred to herein as “Trustee”), on this the ___________ day of ___________________, 2025. `,
                 "WITNESSETH:",
                 "ARTICLE 1.",
                 "Recitals/Definitions",
-                `1.1 This Trust will be known as the \"______________________________________\", a revocable trust which will become irrevocable upon the death of the Surviving Settlor.`,
+                `1.10 This Trust will be known as the \"______________________________________\", a revocable trust which will become irrevocable upon the death of the Surviving Settlor.`,
                 "1.2 This Trust is a Grantor Trust during the joint lives of the Settlors under Code §§ 671-678...",
                 "1.3 The property subject to this Trust and any other Trust created hereby shall be held, administered, and distributed in accordance with the terms of this Trust Agreement.",
-                `1.4 All references in this Trust Agreement to \"the Settlors\" or \"the Settlor\" are to ${name} and ${name}.`,
+                `1.4 All references in this Trust Agreement to \"the Settlors\" or \"the Settlor\" are to ${name.text} and ${name.text}.`,
                 "1.5 All references in this Trust Agreement to the \"Deceased Settlor\" are to the first of the Settlors to die.",
                 "1.6 All references in this Trust Agreement to \"the Surviving Settlor\" are to the Settlor who survives the death of the Deceased Settlor.",
                 "1.7 The term \"the Settlors’ children\" as used herein shall refer only to ______________ and ____________________.",
@@ -101,7 +124,7 @@ export class Revocable_living_TrustAgreementPDF {
             [
                 "ARTICLE 8.",
                 "Trustee and Successor Trust",
-                `8.1 ${Trustee_1} and ${Trustee_2} will serve as the initial Co-Trustees of this Trust Agreement. If for any reason either _________________________ or _________________________ is unable or unwilling to serve or continue to serve, then the other of them shall serve as sole Trustee. If for any reason both _________________________ and _________________________ are unable or unwilling to serve or continue to serve, then the Settlors appoint `,
+                `8.1 ${Trustee_1.text} and ${Trustee_2.text} will serve as the initial Co-Trustees of this Trust Agreement. If for any reason either _________________________ or _________________________ is unable or unwilling to serve or continue to serve, then the other of them shall serve as sole Trustee. If for any reason both _________________________ and _________________________ are unable or unwilling to serve or continue to serve, then the Settlors appoint `,
                 "8.2 Any corporate successor to the trust business of any corporate Trustee designated herein or at any time acting hereunder will succeed to the capacity of its predecessor without conveyance or transfer.",
                 "8.3 Any corporate Trustee will be entitled to compensation as provided in its regularly published schedule of fees, which schedule may be amended by the corporate Trustee from time to time",
                 "8.4 The Settlors request that any family member who serves as Trustee hereunder serve in such capacity without any compensation other than the reimbursement of his or her out-ofpocket expenses. ",
@@ -220,13 +243,13 @@ export class Revocable_living_TrustAgreementPDF {
             [
                 "IN WITNESS WHEREOF, the Settlors and the Co-Trustees, in acceptance of this Trust, have executed this Trust Agreement the day and year first above written. ",
                 "____________________________________________",
-                `${name}, Settlors `,
+                `${name.text}, Settlors `,
                 "____________________________________________",
-                `${name}, Settlors `,
+                `${name.text}, Settlors `,
                 "____________________________________________",
-                `${Trustee_1}, Trustees `,
+                `${Trustee_1.text}, Trustees `,
                 "____________________________________________",
-                `${Trustee_1}, Trustees `,
+                `${Trustee_1.text}, Trustees `,
                 "STATE OF TEXAS ______________________)",
                 "_____________________________________)SS",
                 "COUNTY OF____________________________)",
@@ -241,37 +264,37 @@ export class Revocable_living_TrustAgreementPDF {
             ]
         ];
 
-        const flattenedContent = pagesContent.flat();
+       const flattenedContent = pagesContent.flat();
 
-        let page = pdfDoc.addPage([600, 800]);
-        let y = 750;
-        
-        for (const text of flattenedContent) {
-            if (y < 50) {
-                page = pdfDoc.addPage([600, 800]);
-                y = 750;
-            }
-        
-            // Check if text is dynamic data
-            const isDynamicText = this.replacedValues.some(value => text.includes(value));
-        
-            if (isDynamicText) {
-                // Make dynamic text bold and black
-                y = this.addWrappedText(page, text, 50, y, boldFont, textFontSize, 500, true, rgb(0, 0, 0));
-            } else if (this.shouldSkipBoldOrCentering(text)) {
-                y = this.addWrappedText(page, text, 50, y, font, textFontSize, 500, false);
-            } else if (this.shouldCenterText(text)) {
-                y = this.addCenteredText(page, text, y, boldFont, titleFontSize, true);
-            } else {
-                const isHeader = this.isHeader(text);
-                const fontToUse = isHeader ? boldFont : font;
-                const colorToUse = isHeader ? rgb(0, 0, 0) : rgb(0.3, 0.3, 0.3); // Dull black for normal text
-                const textSize = isHeader ? titleFontSize : textFontSize;
-                y = this.addWrappedText(page, text, 50, y, fontToUse, textSize, 500, isHeader, colorToUse);
-            }
-        
-            y -= 20;
+    let page = pdfDoc.addPage([600, 800]);
+    let y = 750;
+
+    for (const text of flattenedContent) {
+        if (y < 50) {
+            page = pdfDoc.addPage([600, 800]);
+            y = 750;
         }
+
+        const isDynamicText = this.replacedValues.some(value =>
+            text.includes(value)
+        );
+
+        if (isDynamicText) {
+            y = this.addWrappedText(page, text, 50, y, boldFont, textFontSize, 500, true, rgb(0, 0, 0));
+        } else if (this.shouldSkipBoldOrCentering(text)) {
+            y = this.addWrappedText(page, text, 50, y, font, textFontSize, 500, false);
+        } else if (this.shouldCenterText(text)) {
+            y = this.addCenteredText(page, text, y, boldFont, titleFontSize, true);
+        } else {
+            const isHeader = this.isHeader(text);
+            const fontToUse = isHeader ? boldFont : font;
+            const colorToUse = isHeader ? rgb(0, 0, 0) : rgb(0.3, 0.3, 0.3);
+            const textSize = isHeader ? titleFontSize : textFontSize;
+            y = this.addWrappedText(page, text, 50, y, fontToUse, textSize, 500, isHeader, colorToUse);
+        }
+
+        y -= 20;
+    }
         
         // Save and download
         const pdfBytes = await pdfDoc.save();

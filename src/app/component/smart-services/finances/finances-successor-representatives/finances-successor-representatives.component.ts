@@ -27,6 +27,8 @@ export class FinancesSuccessorRepresentativesComponent implements OnInit {
   ngOnInit(): void {
     console.log("Successor Agent Selector – Available Agents:", this.SuccessorAgent);
     console.log("Successor Agent Selector – DocumentPrepareFor:", this.DocumentPrepareFor);
+
+    this.selectedRepresentatives=this.DocumentPrepareFor?.SuccessorRepresentativesAgent||[]
   }
   selectedRepresentatives: Beneficiary[] = [];
 

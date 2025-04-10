@@ -9,15 +9,15 @@ export async function generateAnimalCarePDF(data: any): Promise<void> {
     StandardFonts.TimesRomanBold
   );
 
-  const {Successor,beneficiary,caregiver}=data;
+  const {Successor,beneficiary,caregiver,spouse_name}=data;
   const {firstName,lastName,address}=beneficiary;
   const user1=firstName+lastName;
   const user1Address=address;
   const caregiven=caregiver[0]?.firstName + caregiver[0]?.lastName
-  const successor =Successor[0]?.firstName + Successor[0]?.lastName
+  const successor =Successor
   const dynamicValues: Record<string, string> = {
     name:  user1,
-    Spouse_name: 'Hio',
+    spouse_name,
     address:user1Address,
     caregiven,
     agrement: "TRUST AGREEMENT",
@@ -100,16 +100,27 @@ export async function generateAnimalCarePDF(data: any): Promise<void> {
     const maxWidth = width - margin * 2;
     const fontSize = 12;
     const lines = text.split('\n');
-
-    // Example dynamic values
-   
-
+  
+    // ✅ Format the successor array if it exists
+    if (Array.isArray(dynamicValues['successor'])) {
+      const formattedSuccessors = dynamicValues['successor']
+        .map((suc) => {
+          const first = suc.firstName?.trim().toLowerCase() || '';
+          const last = suc.lastName?.trim().toLowerCase() || '';
+          const relation = suc.relationship?.trim().toLowerCase() || '';
+          const full = [first, last].filter(Boolean).join('_');
+          return `${relation} ${full}  `;
+        })
+        .join(', ');
+      dynamicValues['successor'] = formattedSuccessors;
+    }
+  
     lines.forEach((line) => {
       const rawTokens = line.split(
         /(\$\{.*?\}|(?<=\*\*)!\s*(?=\w+)|(?<=\w+)\s*!(?=\*\*))/g
       );
       const tokens: { text: string; bold: boolean }[] = [];
-
+  
       rawTokens.forEach((token) => {
         const dynamicMatch = token.match(/^\$\{(.*?)\}$/);
         if (dynamicMatch && dynamicValues.hasOwnProperty(dynamicMatch[1])) {
@@ -135,14 +146,14 @@ export async function generateAnimalCarePDF(data: any): Promise<void> {
           });
         }
       });
-
+  
       let currentLineTokens: { text: string; bold: boolean }[] = [];
       let currentLineText = '';
-
+  
       tokens.forEach((token) => {
         const testLine = currentLineText + token.text;
         if (font.widthOfTextAtSize(testLine, fontSize) > maxWidth) {
-          // If the line exceeds max width, draw the current line and reset
+          // Draw current line and reset
           let x = margin;
           currentLineTokens.forEach((tk) => {
             const chosenFont = tk.bold ? boldFont : font;
@@ -155,7 +166,7 @@ export async function generateAnimalCarePDF(data: any): Promise<void> {
             });
             x += chosenFont.widthOfTextAtSize(tk.text, fontSize);
           });
-          y -= 20; // Adjust line height if needed
+          y -= 20;
           currentLineTokens = [token];
           currentLineText = token.text;
         } else {
@@ -163,7 +174,7 @@ export async function generateAnimalCarePDF(data: any): Promise<void> {
           currentLineText += token.text;
         }
       });
-
+  
       if (currentLineTokens.length > 0) {
         let x = margin;
         currentLineTokens.forEach((tk) => {
@@ -177,13 +188,15 @@ export async function generateAnimalCarePDF(data: any): Promise<void> {
           });
           x += chosenFont.widthOfTextAtSize(tk.text, fontSize);
         });
-        y -= 20; // Adjust line height if needed
+        y -= 20;
       }
-      y -= 10; // Add extra space after each line
+  
+      y -= 10; // Extra spacing after each line
     });
-
+  
     return y;
   }
+  
 
   function addFooter(page: PDFPage, width: number, pageNumber: number): void {
     page.drawText(`Page ${pageNumber}`, {
@@ -352,7 +365,7 @@ export async function generateAnimalCarePDF(data: any): Promise<void> {
     '1.1 This Trust will be known as the ${name} a revocable trust which will become irrevocable upon my death. This Trust is a Grantor Trust during my lifetime under Code §§ 671-678 and I am the Grantor for income tax purposes.\n' +
     '1.2 The property subject to this Trust and any other Trust created hereby shall be held, administered, and distributed in accordance with the terms of this Trust Agreement.\n' +
     '1.3 All references in this Trust Agreement to “I,” “me,” “my,” or to “the Settlor” are to ${name}.\n' +
-    '1.4 All references to “my spouse” are to ${Spouse_name}.\n' +
+    '1.4 All references to “my spouse” are to ${spouse_name}.\n' +
     '1.5 All references in the Trust Agreement to “my pets” are to any pet I own at the time of my death. My pets or domestic animals now living are: \n' +
     '1.6 A disposition in this Trust Agreement to the issue of a person in per stirpital parts, or to the issue of a person, per stirpes, shall be deemed to require a division into a sufficient number of equal shares to make one (1) such share for each child of such person living at the time such disposition becomes effective and one (1) share for each then deceased child of such person having one (1) or more issue then living, regardless of whether any child of such person is then living, with the same principle applied in any required further division of a share at a more remote generation.\n' +
     '1.7 All references to the “Code” are to the Internal Revenue Code of 1986, as amended.\n' +
@@ -470,7 +483,7 @@ export async function generateAnimalCarePDF(data: any): Promise<void> {
   addSubSideHeading(page, 'Trustee and Successor Trustee', width5, y5 - 15);
 
   const contentarticle8: string =
-    '8.1 I will serve as the initial Trustee of this Trust Agreement. If for any reason I am unable or unwilling to serve or continue to serve, I appoint my daughter ${successor} as substitute or successor Co-Trustees.\n' +
+    '8.1 I will serve as the initial Trustee of this Trust Agreement. If for any reason I am unable or unwilling to serve or continue to serve, I appoint my  ${successor} as substitute or successor Co-Trustees.\n' +
     '8.2 Any corporate successor to the trust business of any corporate Trustee designated herein or at any time acting hereunder will succeed to the capacity of its predecessor without conveyance or transfer.\n' +
     '8.3 Any corporate Trustee will be entitled to compensation as provided in its regularly published schedule of fees, which schedule may be amended by the corporate Trustee from time to time.\n' +
     '8.4 Any substitute or successor Trustee will succeed as Trustee as though originally identified as the Trustee under this Trust Agreement. All authority, powers, and discretions conferred on the original Trustee under this Trust Agreement will pass to any successor Trustee. No successor Trustee will be responsible for the acts or omissions of any prior Trustee, nor will any successor Trustee be under a duty to audit or investigate the accounts or administration of any prior Trustee. Unless requested in writing by a person having a present or future beneficial interest in any Trust, no successor Trustee will have any duty to take any action to obtain redress for any breach of trust committed by any prior Trustee.\n' +

@@ -28,7 +28,7 @@
 
 
             <div *ngIf="successorType == 'charities'">
-                <app-add-beneficiary
+                <app-add-beneficiary [beneficiaries]="beneficiaries" [inputMode]="'trust'"
                 (providing_Data_emit)="onBeneficiariesChange($event)">
                 </app-add-beneficiary>
             </div>

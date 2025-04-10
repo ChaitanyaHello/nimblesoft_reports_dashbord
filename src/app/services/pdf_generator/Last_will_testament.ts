@@ -242,8 +242,8 @@ export async function generateLastWillAndTestament(data: any): Promise<void> {
     const textWidth = boldFont.widthOfTextAtSize(textToDraw, 12); // Calculate the width of the text
     const xPosition = pageWidth - textWidth - 50; // Adjust the x position for right alignment (increase offset)
 
-    // Draw the text at the calculated position
-    page.drawText(textToDraw, { x: xPosition, y: y - 20, size: 12, font: boldFont });
+    page.drawText('__________________', { x: xPosition, y: y - 15, size: 12, font: boldFont });
+    page.drawText(textToDraw, { x: xPosition, y: y - 30, size: 12, font: boldFont });
 
     return y - 30; // Return the new y position
   }
@@ -281,7 +281,7 @@ export async function generateLastWillAndTestament(data: any): Promise<void> {
 
   addTitle(page, "LAST WILL AND TESTAMENT", width, height);
   addTitle(page, "OF", width, height - 20);
-  y = addBlank(page, y - 20, x + 10);
+  y = addBlank(page, y - 17, x + 225);
 
   const content: string = 'I, ${name} a resident of and domiciled in Frisco, Denton County, Texas, do make, publish, and declare this to be my Last Will and Testament, hereby revoking all Wills and Codicils heretofore made by me.\n\nI am married to ${Spouse_name} Any reference in my Will to “my spouse” is to ${Spouse_name} \n\nThe terms “my children” and “my child” as used herein shall refer only to my daughters ${child_name_1} and ${child_name_2} and any child or children hereafter born to or legally adopted by me.';
   y = addContent(page, content, width, y, timesNewRomanFont);
@@ -500,12 +500,11 @@ export async function generateLastWillAndTestament(data: any): Promise<void> {
   const AFFIDAVITcontent: string = 'I, ___________________________, as testator, after being duly sworn, declare to the undersigned witnesses and to the undersigned authority that this instrument is my will, that I have willingly made and executed it in the presence of the undersigned witnesses, all of whom were present at the same time, as my free act and deed, and that I have requested each of the undersigned witnesses to sign this will in my presence and in the presence of each other.  I now sign this will in the presence of the attesting witnesses and the undersigned authority on this the _______day of _________________, 2025.'
   y7 = addContent(page, AFFIDAVITcontent, width7 + 10, y7 + 8, timesNewRomanFont)
 
-
-  y7 = addtestator(page, y7, `${Spouse_name}`)
+  y7 = addtestator(page, y7+15, `${Spouse_name}`)
 
 
   const contentpage7: string = 'The undersigned, __________________________ and ___________________________, each being at least fourteen (14) years of age, after being duly sworn, declare to the testator and to the undersigned authority that the testator declared to us that this instrument is the testators will and that the testator requested us to act as witnesses to the testators will and signature.  The testator then signed this will in our presence, all of us being present at the same time.  The testator is eighteen (18) years of age or over (or being under such age, is or has been lawfully married, or is a member of the armed forces of the United States or of an auxiliary of the armed forces of the United States or of the United States Maritime Service), and we believe the testator to be of sound mind.  We now sign our names as attesting witnesses in the presence of the testator, each other, and the undersigned authority on this the ______ day of _______________, 2025.'
-  y7 = addContent(page, contentpage7, width7 + 10, y7 - 5, timesNewRomanFont)
+  y7 = addContent(page, contentpage7, width7 + 10, y7 - 15, timesNewRomanFont)
 
 
   // Usage

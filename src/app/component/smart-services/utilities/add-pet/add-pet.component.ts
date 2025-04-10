@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pet } from '../../../../models/interfaces/utilities/IPetDetails';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './add-pet.component.css'
 })
 export class AddPetComponent {
-  pets: Pet[] = [{ name: '', petType: '', otherPetType: '', breed: '', idNumber: '', expanded: false }];
+  @Input() pets: Pet[] = [{ name: '', petType: '', otherPetType: '', breed: '', idNumber: '', expanded: false }];
 
   @Output() petsChange = new EventEmitter<Pet[]>(); // ✅ Explicitly specify type
 

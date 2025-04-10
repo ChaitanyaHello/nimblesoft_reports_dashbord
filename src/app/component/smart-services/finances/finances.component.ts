@@ -177,7 +177,9 @@ user: Beneficiary | null = null;
     this.currentStep = 'representative';
   }
 
-  handleFinish(): void {
+  async handleFinish(): Promise<void> {
+    await generatePowerOfAttorneyPDF(this.DocumentPrepareFor?.beneficiary)
+    await  powerofattorneyInstructionsPDF()
     this.pdfgeneration.loadPdfs(this.DocumentPrepareFor);
     this.currentStep = 'finish'; 
   }

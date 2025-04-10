@@ -53,15 +53,30 @@ export class AddBeneficiaryComponent implements OnInit {
   // typeofRequest determines which UI view to show; default is 'model1'
   @Input() typeofRequest: string = 'model1';
 
+  @Input() beneficiaries: any[] = [];
+
   @Output() providing_Data_emit = new EventEmitter<IRequests[]>();
+
+  @Input() inputMode: 'trust' | 'ultimate' = 'trust';
 
   
   // Temporary beneficiaries list with index information
   Temp_beneficiary: Beneficiary[] = [];
   
   ngOnInit(): void {
+
+     // Check if there's data in sessionStorage and load it
+     const storedData = sessionStorage.getItem(this.getStorageKey());
+     if (storedData) {
+       this.providing_Data = JSON.parse(storedData);
+     }
+
     console.log(this.providing_Data)
     this.loadData();
+  }
+
+  getStorageKey(): string {
+    return this.inputMode === 'trust' ? 'trustProvidingData' : 'ultimateProvidingData';
   }
   
   // When a replacement property option is selected (Charity or Individual)
@@ -187,6 +202,9 @@ export class AddBeneficiaryComponent implements OnInit {
     // Append to array and emit updated data
     this.providing_Data = [...this.providing_Data, this.current_stage];
     this.providing_Data_emit.emit(this.providing_Data);
+
+    // Save updated data to sessionStorage
+    sessionStorage.setItem(this.getStorageKey(), JSON.stringify(this.providing_Data));
   
     // Reset form after adding request
     this.resetForm();
@@ -197,6 +215,7 @@ export class AddBeneficiaryComponent implements OnInit {
   RemoveRequests(data: IRequests) {
     const resdata = this.providing_Data.filter(r => r.id !== data.id);
     this.providing_Data = [...resdata];
+    sessionStorage.setItem(this.getStorageKey(), JSON.stringify(this.providing_Data));
   }
   
   // Reset the current request model and clear selections.

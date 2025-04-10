@@ -17,10 +17,12 @@ import { animalTrustPdf } from '../../../services/pdf_generator/animal_trust_ins
 export interface DocumentPrepareFor {
   beneficiary: Beneficiary;
   Successor: Beneficiary[];
+  spouse_name?:string,
   pets: any[];
   caregiver: Beneficiary[];
   monitoring: { trusteeVisitsRequired: '', visitFrequency: '' }
   dispositionFund: DispositionFund[];
+  ultimateDispositionFund: UltimateDispositionFund[];
 }
 
 export interface DispositionFund { 
@@ -28,6 +30,13 @@ export interface DispositionFund {
   name: string; 
   percentage: null; 
   charityDetails: { name: string; city: string; state: string }  
+}
+
+export interface UltimateDispositionFund{
+  type: string;
+  name: string;
+  percentage: null;
+  charityDetails: { name: string; city: string; state: string}
 }
 
 export interface Monitoring {
@@ -61,6 +70,11 @@ export class AnimalCareComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const storedData = sessionStorage.getItem('animalCareData');
+    if (storedData) {
+      this.DocumentPrepareFor = JSON.parse(storedData);
+    }
+
     this.loadUsers();
   }
 
@@ -108,11 +122,13 @@ export class AnimalCareComponent implements OnInit {
         if (this.Prepare_for_client.length > 0) {
           this.DocumentPrepareFor = {
             beneficiary: this.Prepare_for_client[0],
+            spouse_name:this.Prepare_for_client[1]?.firstName + this.Prepare_for_client[1]?.lastName,
             Successor: [],
             pets: [],
             caregiver: [],
             monitoring: { trusteeVisitsRequired: '', visitFrequency: '' },
-            dispositionFund: []
+           dispositionFund: [],
+            ultimateDispositionFund: []
           };
         }
 
@@ -181,6 +197,11 @@ export class AnimalCareComponent implements OnInit {
     this.DispositionAgent = this.actual_data_members.filter(member =>
       !this.DocumentPrepareFor || member.index !== this.DocumentPrepareFor.beneficiary.index
     );
+    if (this.DocumentPrepareFor) {
+      this.DocumentPrepareFor.caregiver = selectedSuccessors;
+      sessionStorage.setItem('animalCareData', JSON.stringify(this.DocumentPrepareFor));
+    }
+    
     // Move on to HIPAA Authorization step.
     this.currentStep = 'Monitoring';
     console.log("Monitoring selection confirmed:", selectedSuccessors);

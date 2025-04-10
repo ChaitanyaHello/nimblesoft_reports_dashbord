@@ -201,7 +201,7 @@ export async function generateMedicalPowerOfAttorneyPDF(data:any): Promise<void>
       "By signing below, I acknowledge that I have read and understand the information contained in the above disclosure statement.",
       "*(You Must Date And Sign This Power Of Attorney. You May Sign It And Have Your Signature Acknowledged Before A Notary Public Or You May Sign It In The Presence Of Two Competent Adult Witnesses.)*",
       "Signature Acknowledged Before Notary",
-      "I sign my name to this medical power of attorney on day ___________________________ of (month, year) at",
+      "I sign my name to this medical power of attorney on ______day of_____________________ (month, year) at",
       "________________________________________________",
       "(City and State)",
       "________________________________________________",
@@ -224,7 +224,7 @@ export async function generateMedicalPowerOfAttorneyPDF(data:any): Promise<void>
     // Page 4 Content
     const page4Content = [
       "Signature In Presence Of Two Competent Adult Witnesses",
-      "I sign my name to this medical power of attorney on ____________ day of (month, year) at",
+      "I sign my name to this medical power of attorney on ______ day of__________________________ (month, year) at",
       "________________________________________________",
       "(City and State)",
       "________________________________________________",
