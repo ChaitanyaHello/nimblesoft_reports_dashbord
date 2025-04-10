@@ -27,7 +27,8 @@ export class PrepareForComponent implements OnInit {
       Successor: [],
       caregiver:[],
       monitoring:  { trusteeVisitsRequired: '', visitFrequency: '' }, 
-      dispositionFund:[]
+      dispositionFund:[],
+      ultimateDispositionFund:[],
     };
     // Remove the selected user from the list passed to the children.
     this.actual_data_members = this.total_members.filter(member => member.index !== user.index);

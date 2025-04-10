@@ -17,7 +17,7 @@
 
     <h2 class="text-2xl font-bold text-gray-700 mb-6">Pet</h2>
 
-    <app-add-pet (petsChange)="handlePetsUpdate($event)"></app-add-pet>
+    <app-add-pet [pets]="pets" (petsChange)="handlePetsUpdate($event)"></app-add-pet>
 
    
 
